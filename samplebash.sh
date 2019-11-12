@@ -1,40 +1,41 @@
 #!/bin/bash
-# This is a comment!
-#echo "Hello      World"       # This is a comment, too!
-#echo "Hello World"
-#echo "Hello * World"
-#echo Hello * World
-#echo Hello      World
-#echo "Hello" World
-#echo Hello "     " World
-#echo "Hello "*" World"
-#echo `hello` world
-#echo 'hello' world
+#Silly little bash conversation interface
+#Declare ext variable and unknownPhrases associative array
 declare -A unknownPhrases
-exitCommand = "0"
-while [$exitCommand = "0"]
-do
-echo what is your name?
-read User_name
-echo "Hello $User_name, how are you?"
-read Status_string
-#Try to understand the Status_string
-case "$Status_string" in
-  #case 1
-  good*) echo "I recognize 'good' - this is satisfactory!";;
-  #case 2
-  bad*) echo "I recognize 'bad' - I am sorry to hear that.";;
-  *) echo "I don't recognize '$Status_string'"
-  unknownPhrases[$User_name]=$Status_string
+declare -i ext
+ext=0 
+#while loop to run the program
+while [ $ext -eq 0 ]; do
+  echo what is your name?
+  read User_name
+  echo "Hello $User_name, how are you?"
+  read Status_string
+  #Try to understand the Status_string
+  case "$Status_string" in
+    #case 1 : good
+    good*) echo "I recognize 'good' - this is satisfactory!";;
+    #case 2 : bad
+    bad*) echo "I recognize 'bad' - I am sorry to hear that.";;
+	# omnicient case : anything else - add phrase into associative array
+    *) echo "I don't recognize '$Status_string'"
+    unknownPhrases[ $User_name ]=$Status_string;;
   esac
-for i in "${!unknownPhrases[@]}"
-do
-  echo "key  : $i"
-  echo "value: ${unknownPhrases[$i]}"
+  #print associative array of unknownPhrases and their User_name
+  for i in "${!unknownPhrases[@]}"
+  do
+    echo "User  : $i"
+    echo "Unknown phrase: ${unknownPhrases[$i]}"
+  done
+  #Until loop for Continue (y/n condition)
+  continue=""
+  until [[ $continue = "y"  || $continue = "n" ]] ; do
+    echo "would you like to continue? (y/n)"
+    read continue
+    if [ $continue = "n" ]
+    then let ext=1
+    elif [ $continue = "y" ]
+    then let ext=0
+    else echo "Input not recognized."
+    fi
+  done
 done
-echo would you like to continue? (y/n)
-read continue
-if [continue = n]
-then exitCommand = "1"
-done
- 
